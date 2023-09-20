@@ -23,7 +23,7 @@ const retriveAll = async(req,res) =>{
     const uid = req.userid
     const currentUser = await profile.findById(uid).populate('todos')
     const {todos} = currentUser
-    res.status.json(todos)
+    res.status(200).json(todos)
 
 }
 
@@ -34,12 +34,12 @@ const retrive = async(req,res) =>{
 
 }
 const deleteTodo = async(req,res)=>{
-    const uid = req.user.id
-    const currentUser = await profile.findById(id)
+    const uid = req.userid
+    const currentUser = await profile.findById(uid)
     const tid = req.params.id
     await todo.findByIdAndDelete(tid)
-    currentUser.todos.splice(currentUser.todos.indexOf(pid),1)
-    await user.save()
+    currentUser.todos.splice(currentUser.todos.indexOf(tid),1)
+    await currentUser.save()
 
     res.status(200).json({msg:'deleted sucessfully'})
 }

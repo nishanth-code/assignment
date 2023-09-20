@@ -1,5 +1,7 @@
 const todo = require('../models/todo')
 const profile = require('../models/profile')
+const jwt = require('jsonwebtoken');
+const passport = require("passport");
 
 
 const newAccount = async(req,res) =>{
@@ -25,24 +27,30 @@ const update = async(req,res)=>{
     const currentUser = await profile.findById(uid)
     const {username,password,email} = req.body
     await profile.findByIdAndUpdate(uid,{username:username,email:email})
-    await currentUser.setPassword(password, async(err) => {
+    
+    const hashedpassword = await currentUser.setPassword(password, async(err) => {
         if (err) {
-          return res.status(500).json({err});
-        }else{
+           res.status(500).json({err});
+        }
+            console.log('hit')
             await currentUser.save()
-        return res.status(200).json({msg:'profile updated sucessfully'})}
-        })
+        res.status(200).json({msg:'profile updated sucessfully'})}
+)
+
     }
 
 const deleteAccount = async(req,res) =>{
     const uid = req.userid
-    const currentUser = await profile.findById(uid).populate('todo')
+    const currentUser = await profile.findById(uid).populate('todos')
     const {todos} = currentUser
     await todo.deleteMany({_id:{$in:todos}})
+    await profile.findByIdAndDelete(uid)
     res.status(200).json({msg:'profile deleted sucessfully'})
 
 
 
 }
+
+
  module.exports = {retrive,newAccount,deleteAccount,update}
         

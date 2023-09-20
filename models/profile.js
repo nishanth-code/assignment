@@ -1,10 +1,10 @@
 const mongoose = require('mongoose')
 const schema = mongoose.Schema
 const passportLocalMongoose = require('passport-local-mongoose') 
+const bcrypt = require('bcrypt')
 
 const profileSchema = new schema({
-    username:{type:String,required:true},
-    password:{type:String,required:true},
+   
     email:{type:String,required:true},
     todos:[{type:schema.Types.ObjectId,ref:'todo'}]
 })
